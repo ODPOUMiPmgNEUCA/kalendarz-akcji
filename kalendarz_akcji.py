@@ -70,7 +70,11 @@ if uploaded_file:
         events.append(event)
 
     # Pokazujemy kalendarz miesięczny z eventami
-    calendar(events=events, mode="month")
+    calendar_options = {
+    "initialView": "dayGridMonth"   # widok miesięczny
+    }
+
+    calendar(events=events, options=calendar_options)
 
 else:
     st.info("Proszę wczytać plik Excel z kolumnami: Nazwa akcji, Data startu, Data końca.")
