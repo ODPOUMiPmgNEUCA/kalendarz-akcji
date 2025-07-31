@@ -23,7 +23,7 @@ import datetime
 
 
 
-st.set_page_config(page_title='Kalendarz akcji, layout='wide')
+st.set_page_config(page_title='Kalendarz akcji', layout='wide')
 
 
 
