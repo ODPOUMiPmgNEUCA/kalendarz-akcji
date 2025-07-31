@@ -13,57 +13,78 @@ import openpyxl
 import streamlit as st
 import pandas as pd
 import numpy as np
-import altair as alt
-import plotly.express as px
-import plotly.graph_objects as go
-from urllib.request import urlopen
-import json
-import io
-import datetime
 from streamlit_calendar import calendar
 
 st.set_page_config(page_title='Kalendarz akcji', layout='wide')
 
-tabs_font_css = """
-<style>
-div[class*="stTextInput"] label {
-  font-size: 26px;
-  color: black;
-}
-div[class*="stSelectbox"] label {
-  font-size: 26px;
-  color: black;
-}
-</style>
-"""
-st.title("Kalendarz akcji")
+# CSS dla ładniejszej czcionki i kolorów
+st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
-# Upload pliku Excel z akcjami
+    body, .css-18e3th9 {
+        font-family: 'Roboto', sans-serif;
+    }
+
+    /* Nagłówek kalendarza */
+    .fc-toolbar-title {
+        font-size: 28px !important;
+        font-weight: 700 !important;
+        color: #2C3E50;
+    }
+
+    /* Przyciski w kalendarzu */
+    .fc-button {
+        background-color: #3498DB !important;
+        border: none !important;
+        border-radius: 6px !important;
+        padding: 6px 12px !important;
+        font-size: 14px !important;
+        font-weight: 600;
+        color: white !important;
+    }
+
+    /* Hover na przyciski */
+    .fc-button:hover {
+        background-color: #2980B9 !important;
+    }
+
+    /* Eventy – zaokrąglone */
+    .fc-event {
+        border-radius: 8px !important;
+        padding: 4px 6px !important;
+        font-size: 14px !important;
+        font-weight: 500;
+    }
+
+    /* Weekendy – delikatne tło */
+    .fc-day-sat, .fc-day-sun {
+        background-color: #F8F9FA;
+    }
+
+    </style>
+""", unsafe_allow_html=True)
+
+st.title("📅 Kalendarz akcji")
+
 uploaded_file = st.file_uploader("Wczytaj plik Excel z akcjami", type=["xlsx"])
 
 if uploaded_file:
-    # Wczytanie Excela do DataFrame
     df = pd.read_excel(uploaded_file)
-
-    # Wyświetlamy dane żeby zobaczyć co w pliku
     st.write("Podgląd danych:")
     st.dataframe(df.head())
 
-    # Zakładam, że masz kolumny: "Nazwa akcji", "Data startu", "Data końca"
     df["Data startu"] = pd.to_datetime(df["Data startu"])
     df["Data końca"] = pd.to_datetime(df["Data końca"])
 
-    # 🎨 Stała lista kolorów – nie będzie „skakać”
     colors = ["#FF6F61", "#6B5B95", "#88B04B", "#F7CAC9", "#92A8D1",
               "#FFB347", "#E6B0AA", "#48C9B0", "#B565A7", "#009B77",
               "#DD4124", "#45B8AC", "#EFC050", "#5B5EA6", "#9B2335",
               "#DFCFBE", "#55B4B0", "#E15D44", "#7FCDCD", "#BC243C"]
 
-    # Przypisanie kolorów do unikalnych nazw akcji
     unique_names = df["Nazwa akcji"].unique()
     color_map = {name: colors[i % len(colors)] for i, name in enumerate(unique_names)}
 
-    # Tworzymy listę eventów do kalendarza
     events = []
     for _, row in df.iterrows():
         event = {
@@ -74,12 +95,16 @@ if uploaded_file:
         }
         events.append(event)
 
-    # Pokazujemy kalendarz miesięczny z eventami
+    # 🔥 Opcje FullCalendar – robimy „wypasiony” wygląd
     calendar_options = {
-        "initialView": "dayGridMonth"   # widok miesięczny
-    }
-
-    calendar(events=events, options=calendar_options)
-
-else:
-    st.info("Proszę wczytać plik Excel z kolumnami: Nazwa akcji, Data startu, Data końca.")
+        "initialView": "dayGridMonth",
+        "headerToolbar": {
+            "left": "prev,next today",
+            "center": "title",
+            "right": "dayGridMonth,timeGridWeek,timeGridDay"  # zmiana widoku
+        },
+        "height": 750,
+        "contentHeight": "auto",
+        "aspectRatio": 1.5,
+        "navLinks": True,         # klikalne dni/tygodnie
+        "editabl
