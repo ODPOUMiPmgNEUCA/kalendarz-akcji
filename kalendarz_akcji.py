@@ -97,7 +97,7 @@ if uploaded_file:
             "center": "title",
             "right": "dayGridMonth,dayGridWeek,dayGridDay"  # widoki bez godzin
         },
-        "height": 500,
+        "height": 100,
         "contentHeight": "auto",
         "aspectRatio": 1.5,
         "navLinks": True,
