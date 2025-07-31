@@ -95,14 +95,14 @@ if uploaded_file:
         "headerToolbar": {
             "left": "prev,next today",
             "center": "title",
-            "right": "dayGridMonth,dayGridWeek,dayGridDay"  # widoki bez godzin
+            "right": "dayGridMonth,dayGridWeek,dayGridDay"
         },
-        "height": 100,
-        "contentHeight": "auto",
-        "aspectRatio": 1.5,
+        "height": 450,              # niższa wysokość całego kalendarza
+        "contentHeight": 400,       # wysokość sekcji z eventami
+        "aspectRatio": 1.2,         # może trochę szerzej, by nie było zbyt "spłaszczone"
         "navLinks": True,
         "editable": False,
-        "dayMaxEventRows": True
+        "dayMaxEventRows": True     # ogranicza eventy na dzień i daje "+X więcej"
     }
 
     calendar(events=events, options=calendar_options)
