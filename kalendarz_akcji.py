@@ -40,7 +40,7 @@ div[class*="stSelectbox"] label {
 </style>
 """
 
-st.title("Kalendarz akcji)
+st.title("Kalendarz akcji")
 
 
 df_s = st.file_uploader(
