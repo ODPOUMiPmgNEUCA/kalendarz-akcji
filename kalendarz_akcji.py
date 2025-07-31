@@ -103,7 +103,8 @@ if uploaded_file:
         "navLinks": True,
         "editable": False,
         "dayMaxEventRows": True,
-        "locale": "pl"  # <--- to ustawia polski język
+        "locale": "pl",
+        "firstDay": 1
     }
 
 
