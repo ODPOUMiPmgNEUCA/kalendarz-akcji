@@ -107,4 +107,11 @@ if uploaded_file:
         "contentHeight": "auto",
         "aspectRatio": 1.5,
         "navLinks": True,         # klikalne dni/tygodnie
-        "editabl
+        "editable": False,        # można ustawić True jeśli chcesz drag&drop
+        "dayMaxEventRows": True   # jak dużo eventów w dniu
+    }
+
+    calendar(events=events, options=calendar_options)
+
+else:
+    st.info("📂 Proszę wczytać plik Excel z kolumnami: Nazwa akcji, Data startu, Data końca.")
