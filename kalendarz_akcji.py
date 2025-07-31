@@ -52,8 +52,8 @@ if df_k:
     st.write(df_k.head())
 
     # Konwersja kolumn dat
-    df_k['start'] = pd.to_datetime(df_k['start'])
-    df_k['koniec'] = pd.to_datetime(df_k['koniec'])
+    df_k['Data startu'] = pd.to_datetime(df_k['Data startu'])
+    df_k['Data końca'] = pd.to_datetime(df_k['Data końca'])
 
     # Tworzymy timeline
     fig = px.timeline(
