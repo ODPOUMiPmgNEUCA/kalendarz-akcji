@@ -21,13 +21,8 @@ import json
 import io
 import datetime
 from streamlit_calendar import calendar
-import random
-
-
 
 st.set_page_config(page_title='Kalendarz akcji', layout='wide')
-
-
 
 tabs_font_css = """
 <style>
@@ -55,13 +50,20 @@ if uploaded_file:
     st.dataframe(df.head())
 
     # Zakładam, że masz kolumny: "Nazwa akcji", "Data startu", "Data końca"
-    # Konwersja kolumn na datetime
     df["Data startu"] = pd.to_datetime(df["Data startu"])
     df["Data końca"] = pd.to_datetime(df["Data końca"])
 
+    # 🎨 Stała lista kolorów – nie będzie „skakać”
+    colors = ["#FF6F61", "#6B5B95", "#88B04B", "#F7CAC9", "#92A8D1",
+              "#FFB347", "#E6B0AA", "#48C9B0", "#B565A7", "#009B77",
+              "#DD4124", "#45B8AC", "#EFC050", "#5B5EA6", "#9B2335",
+              "#DFCFBE", "#55B4B0", "#E15D44", "#7FCDCD", "#BC243C"]
+
+    # Przypisanie kolorów do unikalnych nazw akcji
     unique_names = df["Nazwa akcji"].unique()
-    color_map = {name: f"#{random.randint(0, 0xFFFFFF):06x}" for name in unique_names}
-    # Przygotowanie listy eventów do streamlit-calendar
+    color_map = {name: colors[i % len(colors)] for i, name in enumerate(unique_names)}
+
+    # Tworzymy listę eventów do kalendarza
     events = []
     for _, row in df.iterrows():
         event = {
@@ -74,7 +76,7 @@ if uploaded_file:
 
     # Pokazujemy kalendarz miesięczny z eventami
     calendar_options = {
-    "initialView": "dayGridMonth"   # widok miesięczny
+        "initialView": "dayGridMonth"   # widok miesięczny
     }
 
     calendar(events=events, options=calendar_options)
