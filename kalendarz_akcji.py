@@ -43,11 +43,8 @@ div[class*="stSelectbox"] label {
 st.title("Kalendarz akcji")
 
 
-df_s = st.file_uploader(
+df_k = st.file_uploader(
     label = "Wrzuć plik RaportPromocyjny - stary - ZAWSZE W FORMACIE XLSX - JUŻ PO PRZERÓBKACH!!!"
-)
-df_n = st.file_uploader(
-    label = "Wrzuć plik RaportPromocyjny - dzisiejszy - ZAWSZE W FORMACIE CSV - ŻYWCEM POBRANY Z MAILA!!!"
 )
 
 if df_s:
@@ -55,42 +52,4 @@ if df_s:
     st.write(df_s.head())
 else:
     df_s = pd.DataFrame()  # pusty dataframe na start
-
-if df_n:
-    df_n = pd.read_csv(df_n, sep=';')
-    st.write(df_n.head())
-
-    kolumny = [
-        'Nazwa Promocji', 'Rabat Promocyjny', 'Rabat kwotowy', 'Id Materiału', 'Nazwa Materiału',
-        'Nazwa producenta sprzedażowego', 'identyfikator promocji', 'Data obowiązywania promocji od',
-        'Data obowiązywania promocji do', 'Ilość Klientów', 'Master ID'
-    ]
-    df_n = df_n[kolumny]
-
-    master_ids = [
-        91, 89, 50, 49, 351, 64, 303, 320, 322, 357, 257, 321, 78, 355, 203, 323, 340, 338, 253,
-        356, 84, 87, 319, 344, 353, 331, 102, 224, 97, 98, 352, 330, 333, 346, 212, 213, 211,
-        217, 295, 342, 216, 215, 245
-    ]
-    df_n = df_n[df_n['Master ID'].isin(master_ids)]
-
-    if not df_s.empty:
-        new_rows = df_n[~df_n.isin(df_s).all(axis=1)]
-        df = pd.concat([df_s, new_rows], ignore_index=True)
-    else:
-        df = df_n.copy()  # jeśli nie ma starego, to po prostu bierzemy cały nowy
-
-    today = datetime.datetime.today().strftime('%d-%m-%Y')
-    excel_file1 = io.BytesIO()
-
-    with pd.ExcelWriter(excel_file1, engine='xlsxwriter') as writer:
-        df.to_excel(writer, index=False, sheet_name='dane')
-
-    excel_file1.seek(0)
-
-    st.download_button(
-        label='Pobierz dane do kalendarza',
-        data=excel_file1,
-        file_name=f'Dane_kalendarz_{today}.xlsx',
-        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
+    
