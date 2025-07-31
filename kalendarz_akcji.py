@@ -102,8 +102,10 @@ if uploaded_file:
         "aspectRatio": 1.5,
         "navLinks": True,
         "editable": False,
-        "dayMaxEventRows": True
+        "dayMaxEventRows": True,
+        "locale": "pl"  # <--- to ustawia polski język
     }
+
 
     calendar(events=events, options=calendar_options)
 
