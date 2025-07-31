@@ -58,8 +58,8 @@ if df_k:
     # Tworzymy timeline
     fig = px.timeline(
         df_k,
-        x_start="start",
-        x_end="koniec",
+        x_start="Data startu",
+        x_end="Data końca",
         y="akcja",
         color="akcja"
     )
