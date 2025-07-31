@@ -97,12 +97,12 @@ if uploaded_file:
             "center": "title",
             "right": "dayGridMonth,dayGridWeek,dayGridDay"
         },
-        "height": 450,              # niższa wysokość całego kalendarza
-        "contentHeight": 400,       # wysokość sekcji z eventami
-        "aspectRatio": 1.2,         # może trochę szerzej, by nie było zbyt "spłaszczone"
+        "height": 750,
+        "contentHeight": "auto",
+        "aspectRatio": 1.5,
         "navLinks": True,
         "editable": False,
-        "dayMaxEventRows": True     # ogranicza eventy na dzień i daje "+X więcej"
+        "dayMaxEventRows": True
     }
 
     calendar(events=events, options=calendar_options)
