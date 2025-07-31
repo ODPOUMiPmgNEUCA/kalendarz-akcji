@@ -40,39 +40,37 @@ div[class*="stSelectbox"] label {
 }
 </style>
 """
-
 st.title("Kalendarz akcji")
 
+# Upload pliku Excel z akcjami
+uploaded_file = st.file_uploader("Wczytaj plik Excel z akcjami", type=["xlsx"])
 
-df_k = st.file_uploader(
-    label="Wrzucam se ich syf"
-)
+if uploaded_file:
+    # Wczytanie Excela do DataFrame
+    df = pd.read_excel(uploaded_file)
 
-if df_k:
-    df_k = pd.read_excel(df_k)
-    st.write(df_k.head())
+    # Wyświetlamy dane żeby zobaczyć co w pliku
+    st.write("Podgląd danych:")
+    st.dataframe(df.head())
 
-    # Konwersja kolumn dat
-    df_k['Data startu'] = pd.to_datetime(df_k['Data startu'])
-    df_k['Data końca'] = pd.to_datetime(df_k['Data końca'])
+    # Zakładam, że masz kolumny: "Nazwa akcji", "Data startu", "Data końca"
+    # Konwersja kolumn na datetime
+    df["Data startu"] = pd.to_datetime(df["Data startu"])
+    df["Data końca"] = pd.to_datetime(df["Data końca"])
 
-    # Tworzymy timeline
-    fig = px.timeline(
-        df_k,
-        x_start="Data startu",
-        x_end="Data końca",
-        y="Nazwa akcji",
-        color="Nazwa akcji"
-    )
+    # Przygotowanie listy eventów do streamlit-calendar
+    events = []
+    for _, row in df.iterrows():
+        event = {
+            "start": row["Data startu"].strftime("%Y-%m-%d"),
+            "end": row["Data końca"].strftime("%Y-%m-%d"),
+            "title": row["Nazwa akcji"],
+            "color": "#3399FF",  # możesz zmienić lub zrobić losowe kolory
+        }
+        events.append(event)
 
-    fig.update_yaxes(autorange="reversed")
+    # Pokazujemy kalendarz miesięczny z eventami
+    calendar(events=events, mode="month")
 
-    fig.update_layout(
-        title="📊 Harmonogram akcji",
-        xaxis_title="Data",
-        yaxis_title="Nazwa akcji",
-        legend_title="Akcje",
-        bargap=0.3
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
+else:
+    st.info("Proszę wczytać plik Excel z kolumnami: Nazwa akcji, Data startu, Data końca.")
