@@ -60,8 +60,8 @@ if df_k:
         df_k,
         x_start="Data startu",
         x_end="Data końca",
-        y="akcja",
-        color="akcja"
+        y="Nazwa akcji",
+        color="Nazwa akcji"
     )
 
     fig.update_yaxes(autorange="reversed")
@@ -69,7 +69,7 @@ if df_k:
     fig.update_layout(
         title="📊 Harmonogram akcji",
         xaxis_title="Data",
-        yaxis_title="Akcja",
+        yaxis_title="Nazwa akcji",
         legend_title="Akcje",
         bargap=0.3
     )
