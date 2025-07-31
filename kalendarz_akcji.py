@@ -23,7 +23,7 @@ import datetime
 
 
 
-st.set_page_config(page_title='Łączenie danych do kalendarza', layout='wide')
+st.set_page_config(page_title='Kalendarz akcji, layout='wide')
 
 
 
@@ -40,7 +40,7 @@ div[class*="stSelectbox"] label {
 </style>
 """
 
-st.title("Automat ŁĄCZENIE DANYCH DO KALENDARZA")
+st.title("Kalendarz akcji)
 
 
 df_s = st.file_uploader(
