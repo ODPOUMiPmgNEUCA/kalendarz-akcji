@@ -58,6 +58,8 @@ if uploaded_file:
     df["Data startu"] = pd.to_datetime(df["Data startu"])
     df["Data końca"] = pd.to_datetime(df["Data końca"])
 
+    unique_names = df["Nazwa akcji"].unique()
+    color_map = {name: f"#{random.randint(0, 0xFFFFFF):06x}" for name in unique_names}
     # Przygotowanie listy eventów do streamlit-calendar
     events = []
     for _, row in df.iterrows():
@@ -65,7 +67,7 @@ if uploaded_file:
             "start": row["Data startu"].strftime("%Y-%m-%d"),
             "end": row["Data końca"].strftime("%Y-%m-%d"),
             "title": row["Nazwa akcji"],
-            "color": "#3399FF",  # możesz zmienić lub zrobić losowe kolory
+            "color": color_map[row["Nazwa akcji"]],
         }
         events.append(event)
 
