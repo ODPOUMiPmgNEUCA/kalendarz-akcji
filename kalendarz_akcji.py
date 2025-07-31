@@ -44,12 +44,12 @@ st.title("Kalendarz akcji")
 
 
 df_k = st.file_uploader(
-    label = "Wrzuć plik RaportPromocyjny - stary - ZAWSZE W FORMACIE XLSX - JUŻ PO PRZERÓBKACH!!!"
+    label = "Wrzucam se ich syf"
 )
 
-if df_s:
-    df_s = pd.read_excel(df_s)
-    st.write(df_s.head())
+if df_k:
+    df_k = pd.read_excel(df_k)
+    st.write(df_k.head())
 else:
-    df_s = pd.DataFrame()  # pusty dataframe na start
+    df_k = pd.DataFrame()  # pusty dataframe na start
     
