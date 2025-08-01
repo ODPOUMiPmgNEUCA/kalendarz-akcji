@@ -56,25 +56,26 @@ palettes = {
 # 📑 ZAKŁADKI NA POCZĄTKU
 tab1, tab2 = st.tabs(["📆 Kalendarz główny", "📆 Kalendarz szczegółowy"])
 
-# 📂 UPLOAD PLIKU
-uploaded_file = st.file_uploader("📄 Wczytaj plik Excel z akcjami", type=["xlsx"])
 
 # 🔽 WYBÓR PALETY (przed uploadem, widoczny od razu)
 selected_palette = st.selectbox("🎨 Wybierz paletę kolorów", list(palettes.keys()))
 
-if uploaded_file:
-    df = pd.read_excel(uploaded_file)
-    df["Data startu"] = pd.to_datetime(df["Data startu"])
-    df["Data końca"] = pd.to_datetime(df["Data końca"])
-
-    # 🎨 Kolory dla akcji
-    palette = palettes[selected_palette]
-    unique_names = df["Nazwa akcji"].unique()
-    color_map = {name: palette[i % len(palette)] for i, name in enumerate(unique_names)}
 
     # 🔹 Zakładka 1 – kalendarz
     with tab1:
         st.subheader("📅 Widok kalendarza")
+        # 📂 UPLOAD PLIKU
+        uploaded_file = st.file_uploader("📄 Wczytaj plik Excel z akcjami", type=["xlsx"])
+        
+        if uploaded_file:
+            df = pd.read_excel(uploaded_file)
+            df["Data startu"] = pd.to_datetime(df["Data startu"])
+            df["Data końca"] = pd.to_datetime(df["Data końca"])
+
+            # 🎨 Kolory dla akcji
+            palette = palettes[selected_palette]
+            unique_names = df["Nazwa akcji"].unique()
+            color_map = {name: palette[i % len(palette)] for i, name in enumerate(unique_names)}
 
         events = []
         for _, row in df.iterrows():
