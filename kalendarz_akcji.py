@@ -174,6 +174,10 @@ with tab2:
         st.write("Wiersze z NaT w 'Data końca':")
         st.write(df_final[df_final["Data końca"].isna()])
 
+        st.write("Sprawdzenie, czy są NaT w Data startu:", df_final["Data startu"].isna().sum())
+        st.write("Wiersze z NaT w 'Data startu':")
+        st.write(df_final[df_final["Data startu"].isna()])
+
         events2 = []
         for _, row in df_final.iterrows():
             events2.append({
