@@ -98,25 +98,56 @@ with tab1:
         st.info("📥 Najpierw wczytaj plik Excel, aby zobaczyć kalendarz.")
 
 with tab2:
-    st.subheader("📊 Statystyki akcji")
-    if uploaded_file:
-        total_events = len(df)
-        unique_events = df["Nazwa akcji"].nunique()
-        longest = (df["Data końca"] - df["Data startu"]).max().days + 1
+    st.subheader("📅 Widok kalendarza szczegółowego")
+    uploaded_file_tab2 = st.file_uploader("📄 Wczytaj plik Excel z akcjami (zakładka szczegółowa)", type=["xlsx"], key="uploader_tab2")
+    
+    st.subheader("🎨 Wybierz paletę kolorów dla kalendarza szczegółowego")
+    selected_palette_tab2 = st.selectbox("Paleta dla kalendarza szczegółowego", list(palettes.keys()), key="palette_tab2")
 
-        st.markdown(f"""
-        ✅ **Łączna liczba akcji:** {total_events}  
-        ✅ **Unikalne akcje:** {unique_events}  
-        ✅ **Najdłuższa akcja trwała:** {longest} dni
-        """)
+    if uploaded_file_tab2:
+        df2 = pd.read_excel(uploaded_file_tab2)
+        df2["Data startu"] = pd.to_datetime(df2["Data startu"])
+        df2["Data końca"] = pd.to_datetime(df2["Data końca"])
+        
+        # Zakładam, że w pliku jest kolumna "Producent"
+        producenci = df2["Producent"].unique()
+        wybrany_producent = st.selectbox("Wybierz producenta do wyświetlenia", options=producenci, key="select_producent")
 
-        df["Miesiąc"] = df["Data startu"].dt.to_period("M").astype(str)
-        month_counts = df.groupby("Miesiąc").size().reset_index(name="Liczba akcji")
+        # Filtrujemy df2 wg wybranego producenta
+        df2_filtered = df2[df2["Producent"] == wybrany_producent]
 
-        fig = px.bar(month_counts, x="Miesiąc", y="Liczba akcji",
-                     title="📈 Liczba akcji w miesiącach",
-                     color="Liczba akcji", color_continuous_scale="Blues")
+        palette2 = palettes[selected_palette_tab2]
+        unique_names2 = df2_filtered["Nazwa akcji"].unique()
+        color_map2 = {name: palette2[i % len(palette2)] for i, name in enumerate(unique_names2)}
 
-        st.plotly_chart(fig, use_container_width=True)
+        events2 = []
+        for _, row in df2_filtered.iterrows():
+            events2.append({
+                "start": row["Data startu"].strftime("%Y-%m-%d"),
+                "end": row["Data końca"].strftime("%Y-%m-%d"),
+                "title": row["Nazwa akcji"],
+                "color": color_map2[row["Nazwa akcji"]],
+            })
+
+        calendar_options2 = {
+            "initialView": "dayGridMonth",
+            "headerToolbar": {
+                "left": "prev,next today",
+                "center": "title",
+                "right": "dayGridMonth,dayGridWeek,dayGridDay"
+            },
+            "height": 750,
+            "contentHeight": "auto",
+            "aspectRatio": 1.5,
+            "navLinks": True,
+            "editable": False,
+            "dayMaxEventRows": True,
+            "locale": "pl",
+            "firstDay": 1
+        }
+
+        calendar(events=events2, options=calendar_options2)
+
     else:
-        st.info("📥 Najpierw wczytaj plik Excel, aby zobaczyć statystyki.")
+        st.info("📥 Najpierw wczytaj plik Excel, aby zobaczyć kalendarz szczegółowy.")
+
