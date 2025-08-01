@@ -66,3 +66,53 @@ if uploaded_file:
 
     # 🎨 PASTELOWA PALETA KOLORÓW
     pastel_palette = [
+        "#FFB3BA",  # pastelowy róż
+        "#FFDFBA",  # pastelowy pomarańcz
+        "#FFFFBA",  # pastelowy żółty
+        "#BAFFC9",  # pastelowy zielony
+        "#BAE1FF",  # pastelowy niebieski
+        "#E0BAFF",  # pastelowy fiolet
+        "#FFD6E0",  # jasny róż
+        "#D6FFD6"   # jasny miętowy
+    ]
+
+    # Mapowanie kolorów do unikalnych nazw akcji
+    unique_names = df["Nazwa akcji"].unique()
+    color_map = {}
+    for i, name in enumerate(unique_names):
+        color_map[name] = pastel_palette[i % len(pastel_palette)]
+
+    # Przygotowanie listy eventów do streamlit-calendar
+    events = []
+    for _, row in df.iterrows():
+        event = {
+            "start": row["Data startu"].strftime("%Y-%m-%d"),
+            "end": row["Data końca"].strftime("%Y-%m-%d"),
+            "title": row["Nazwa akcji"],
+            "color": color_map[row["Nazwa akcji"]],
+        }
+        events.append(event)
+
+    # Ustawienia kalendarza
+    calendar_options = {
+        "initialView": "dayGridMonth",
+        "headerToolbar": {
+            "left": "prev,next today",
+            "center": "title",
+            "right": "dayGridMonth,dayGridWeek,dayGridDay"
+        },
+        "height": 750,
+        "contentHeight": "auto",
+        "aspectRatio": 1.5,
+        "navLinks": True,
+        "editable": False,
+        "dayMaxEventRows": True,
+        "locale": "pl",
+        "firstDay": 1
+    }
+
+    # Wyświetlenie kalendarza
+    calendar(events=events, options=calendar_options)
+
+else:
+    st.info("📥 Proszę wczytać plik Excel z kolumnami: **Nazwa akcji, Data startu, Data końca.**")
