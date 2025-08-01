@@ -34,66 +34,59 @@ import io
 import datetime
 from streamlit_calendar import calendar
 
+
 st.set_page_config(page_title='Kalendarz akcji', layout='wide')
+st.title("📆 Kalendarz akcji")
 
-tabs_font_css = """
-<style>
-div[class*="stTextInput"] label {
-  font-size: 26px;
-  color: black;
+# 🎨 RÓŻNE PALETY DO WYBORU
+palettes = {
+    "Żywa": [
+        "#FF6B6B", "#FF922B", "#FFD93D", "#6BCB77",
+        "#4D96FF", "#845EC2", "#FF5E78", "#00C9A7"
+    ],
+    "Pastelowa": [
+        "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9",
+        "#BAE1FF", "#E0BBE4", "#FFCCE5", "#C2F0FC"
+    ],
+    "Odcienie niebieskiego": [
+        "#001F3F", "#003566", "#00509E", "#0074D9",
+        "#419DFF", "#7ABFFF", "#A8D8FF", "#D6ECFF"
+    ]
 }
-div[class*="stSelectbox"] label {
-  font-size: 26px;
-  color: black;
-}
-</style>
-"""
-st.title("📅 Kalendarz akcji")
 
-# Upload pliku Excel z akcjami
-uploaded_file = st.file_uploader("Wczytaj plik Excel z akcjami", type=["xlsx"])
+# 🔽 WYBÓR PALETY
+selected_palette = st.selectbox("🎨 Wybierz paletę kolorów", list(palettes.keys()))
+
+# 📂 UPLOAD PLIKU
+uploaded_file = st.file_uploader("📄 Wczytaj plik Excel z akcjami", type=["xlsx"])
 
 if uploaded_file:
-    # Wczytanie Excela do DataFrame
+    # Wczytanie Excela
     df = pd.read_excel(uploaded_file)
 
-    st.write("✅ **Podgląd danych:**")
+    st.write("🔍 Podgląd danych:")
     st.dataframe(df.head())
 
-    # Zakładam, że masz kolumny: "Nazwa akcji", "Data startu", "Data końca"
+    # Konwersja kolumn na datetime
     df["Data startu"] = pd.to_datetime(df["Data startu"])
     df["Data końca"] = pd.to_datetime(df["Data końca"])
 
-    # 🎨 PASTELOWA PALETA KOLORÓW
-    pastel_palette = [
-        "#FFB3BA",  # pastelowy róż
-        "#FFDFBA",  # pastelowy pomarańcz
-        "#FFFFBA",  # pastelowy żółty
-        "#BAFFC9",  # pastelowy zielony
-        "#BAE1FF",  # pastelowy niebieski
-        "#E0BAFF",  # pastelowy fiolet
-        "#FFD6E0",  # jasny róż
-        "#D6FFD6"   # jasny miętowy
-    ]
-
-    # Mapowanie kolorów do unikalnych nazw akcji
+    # 🎨 Mapowanie kolorów
+    palette = palettes[selected_palette]
     unique_names = df["Nazwa akcji"].unique()
-    color_map = {}
-    for i, name in enumerate(unique_names):
-        color_map[name] = pastel_palette[i % len(pastel_palette)]
+    color_map = {name: palette[i % len(palette)] for i, name in enumerate(unique_names)}
 
-    # Przygotowanie listy eventów do streamlit-calendar
+    # 📅 Tworzenie eventów
     events = []
     for _, row in df.iterrows():
-        event = {
+        events.append({
             "start": row["Data startu"].strftime("%Y-%m-%d"),
             "end": row["Data końca"].strftime("%Y-%m-%d"),
             "title": row["Nazwa akcji"],
             "color": color_map[row["Nazwa akcji"]],
-        }
-        events.append(event)
+        })
 
-    # Ustawienia kalendarza
+    # ⚙️ Ustawienia kalendarza
     calendar_options = {
         "initialView": "dayGridMonth",
         "headerToolbar": {
@@ -111,8 +104,8 @@ if uploaded_file:
         "firstDay": 1
     }
 
-    # Wyświetlenie kalendarza
+    # 📆 Wyświetlenie kalendarza
     calendar(events=events, options=calendar_options)
 
 else:
-    st.info("📥 Proszę wczytać plik Excel z kolumnami: **Nazwa akcji, Data startu, Data końca.**")
+    st.info("📥 Proszę wczytać plik Excel z kolumnami: Nazwa akcji, Data startu, Data końca.")
