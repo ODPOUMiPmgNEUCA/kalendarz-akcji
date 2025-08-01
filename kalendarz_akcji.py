@@ -19,7 +19,6 @@ Original file is located at
 # -*- coding: utf-8 -*-
 """Kalendarz_akcji.ipynb"""
 
-#importowanie potrzebnych bibliotek
 import os
 import openpyxl
 import streamlit as st
@@ -33,7 +32,6 @@ import json
 import io
 import datetime
 from streamlit_calendar import calendar
-
 
 st.set_page_config(page_title='Kalendarz akcji', layout='wide')
 st.title("📆 Kalendarz akcji")
@@ -56,14 +54,15 @@ palettes = {
         "#96C7FF", "#CBE2FF"
     ]
 }
-# 🔽 WYBÓR PALETY
+
+# 🔽 WYBÓR PALETY (przed uploadem, widoczny od razu)
 selected_palette = st.selectbox("🎨 Wybierz paletę kolorów", list(palettes.keys()))
+
+# 📑 ZAKŁADKI NA POCZĄTKU
+tab1, tab2 = st.tabs(["📆 Kalendarz", "📊 Statystyki"])
 
 # 📂 UPLOAD PLIKU
 uploaded_file = st.file_uploader("📄 Wczytaj plik Excel z akcjami", type=["xlsx"])
-
-# 📑 ZAKŁADKI ZAWSZE WIDOCZNE
-tab1, tab2 = st.tabs(["📆 Kalendarz", "📊 Statystyki"])
 
 if uploaded_file:
     df = pd.read_excel(uploaded_file)
@@ -111,7 +110,6 @@ if uploaded_file:
     with tab2:
         st.subheader("📊 Statystyki akcji")
 
-        # 📝 Podstawowe dane
         total_events = len(df)
         unique_events = df["Nazwa akcji"].nunique()
         longest = (df["Data końca"] - df["Data startu"]).max().days + 1
@@ -132,6 +130,7 @@ if uploaded_file:
 
         st.plotly_chart(fig, use_container_width=True)
 
+# 🔻 Jeśli plik nie został jeszcze wgrany
 else:
     with tab1:
         st.info("📥 Najpierw wczytaj plik Excel, aby zobaczyć kalendarz.")
