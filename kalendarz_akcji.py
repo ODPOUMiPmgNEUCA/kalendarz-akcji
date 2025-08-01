@@ -56,8 +56,6 @@ palettes = {
 # 📑 ZAKŁADKI NA POCZĄTKU
 tab1, tab2 = st.tabs(["📆 Kalendarz główny", "📆 Kalendarz szczegółowy"])
 
-selected_palette = st.selectbox("🎨 Wybierz paletę kolorów", list(palettes.keys()))
-
 with tab1:
     st.subheader("📅 Widok kalendarza")
     uploaded_file = st.file_uploader("📄 Wczytaj plik Excel z akcjami", type=["xlsx"])
