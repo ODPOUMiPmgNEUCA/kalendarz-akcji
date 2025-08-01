@@ -105,10 +105,10 @@ with tab2:
         
         # 1. Podstawowy podział rodzajów promocji
         df2["Rodzaj promocji"] = ""
-        df2.loc[df2["Nazwa akcji"] == 61114, "Rodzaj promocji"] = "ŚZ/P"
-        df2.loc[df2["Zlecenie"].astype(str).str.contains("ZGZ", na=False), "Rodzaj promocji"] = "ZGZ"
-        df2.loc[df2["Nazwa akcji"] == 27001, "Rodzaj promocji"] = "centralne"
-        df2.loc[df2["Zlecenie"].astype(str).str.contains("BKS", na=False), "Rodzaj promocji"] = "sieci"
+        df2.loc[df2["Zlecenie"] == 61114, "Rodzaj promocji"] = "ŚZ/P"
+        df2.loc[df2["Nazwa akcji"].astype(str).str.contains("ZGZ", na=False), "Rodzaj promocji"] = "ZGZ"
+        df2.loc[df2["Zlecenie"] == 27001, "Rodzaj promocji"] = "centralne"
+        df2.loc[df2["Nazwa akcji"].astype(str).str.contains("BKS", na=False), "Rodzaj promocji"] = "sieci"
         df2.loc[df2["Rodzaj promocji"] == "", "Rodzaj promocji"] = "regionalne"
 
         # Zamieniamy daty większe niż limit_date na limit_date
