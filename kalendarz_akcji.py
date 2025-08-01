@@ -87,7 +87,9 @@ with tab1:
 
 with tab2:
     st.subheader("📅 Widok kalendarza szczegółowego")
-    uploaded_file_tab2 = st.file_uploader("📄 Wczytaj plik Excel z akcjami (zakładka szczegółowa)", type=["xlsx"], key="uploader_tab2")
+    uploaded_file_tab2 = st.file_uploader("📄 Wczytaj plik csv (raport wolnego)", type=["csv"], key="uploader_tab2")
+    df2 = df2.iloc[:, [0, 22, 23, 32, 7]]
+    df2.columns = ["Nazwa akcji", "Data startu", "Data końca", "Zlecenie", "Producent"]
     
     st.subheader("🎨 Wybierz paletę kolorów dla kalendarza szczegółowego")
     selected_palette_tab2 = st.selectbox("Paleta dla kalendarza szczegółowego", list(palettes.keys()), key="palette_tab2")
