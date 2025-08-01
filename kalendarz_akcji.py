@@ -19,7 +19,6 @@ Original file is located at
 # -*- coding: utf-8 -*-
 """Kalendarz_akcji.ipynb"""
 
-import os
 import openpyxl
 import streamlit as st
 import pandas as pd
@@ -54,15 +53,14 @@ palettes = {
         "#96C7FF", "#CBE2FF"
     ]
 }
+# 📑 ZAKŁADKI NA POCZĄTKU
+tab1, tab2 = st.tabs(["📆 Kalendarz główny", "📆 Kalendarz szczegółowy"])
 
 # 🔽 WYBÓR PALETY (przed uploadem, widoczny od razu)
 selected_palette = st.selectbox("🎨 Wybierz paletę kolorów", list(palettes.keys()))
 
-# 📑 ZAKŁADKI NA POCZĄTKU
-tab1, tab2 = st.tabs(["📆 Kalendarz główny", "📆 Kalendarz szczegółowy"])
-
-# 📂 UPLOAD PLIKU - dla kalendarza głównego
-uploaded_file = st.file_uploader("📄 Wczytaj plik Excel z akcjami (kalendarz główny)", type=["xlsx"], key="main")
+# 📂 UPLOAD PLIKU
+uploaded_file = st.file_uploader("📄 Wczytaj plik Excel z akcjami", type=["xlsx"])
 
 if uploaded_file:
     df = pd.read_excel(uploaded_file)
@@ -74,7 +72,7 @@ if uploaded_file:
     unique_names = df["Nazwa akcji"].unique()
     color_map = {name: palette[i % len(palette)] for i, name in enumerate(unique_names)}
 
-    # 🔹 Zakładka 1 – kalendarz główny
+    # 🔹 Zakładka 1 – kalendarz
     with tab1:
         st.subheader("📅 Widok kalendarza")
 
@@ -87,4 +85,53 @@ if uploaded_file:
                 "color": color_map[row["Nazwa akcji"]],
             })
 
-        calendar
+        calendar_options = {
+            "initialView": "dayGridMonth",
+            "headerToolbar": {
+                "left": "prev,next today",
+                "center": "title",
+                "right": "dayGridMonth,dayGridWeek,dayGridDay"
+            },
+            "height": 750,
+            "contentHeight": "auto",
+            "aspectRatio": 1.5,
+            "navLinks": True,
+            "editable": False,
+            "dayMaxEventRows": True,
+            "locale": "pl",
+            "firstDay": 1
+        }
+
+        calendar(events=events, options=calendar_options)
+
+    # 🔹 Zakładka 2 – statystyki
+    with tab2:
+        st.subheader("📊 Statystyki akcji")
+
+        total_events = len(df)
+        unique_events = df["Nazwa akcji"].nunique()
+        longest = (df["Data końca"] - df["Data startu"]).max().days + 1
+
+        st.markdown(f"""
+        ✅ **Łączna liczba akcji:** {total_events}  
+        ✅ **Unikalne akcje:** {unique_events}  
+        ✅ **Najdłuższa akcja trwała:** {longest} dni
+        """)
+
+        # 📈 Wykres liczby akcji w poszczególnych miesiącach
+        df["Miesiąc"] = df["Data startu"].dt.to_period("M").astype(str)
+        month_counts = df.groupby("Miesiąc").size().reset_index(name="Liczba akcji")
+
+        fig = px.bar(month_counts, x="Miesiąc", y="Liczba akcji",
+                     title="📈 Liczba akcji w miesiącach",
+                     color="Liczba akcji", color_continuous_scale="Blues")
+
+        st.plotly_chart(fig, use_container_width=True)
+
+# 🔻 Jeśli plik nie został jeszcze wgrany
+else:
+    with tab1:
+        st.info("📥 Najpierw wczytaj plik Excel, aby zobaczyć kalendarz.")
+
+    with tab2:
+        st.info("📥 Najpierw wczytaj plik Excel, aby zobaczyć statystyki.")
