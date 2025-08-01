@@ -98,8 +98,8 @@ with tab2:
         df2 = df2.iloc[:, [0, 22, 23, 32, 7]]
         df2.columns = ["Nazwa akcji", "Data startu", "Data końca", "Zlecenie", "Producent"]
         df2 = df2.drop_duplicates()
-        df2["Data startu"] = pd.to_datetime(df2["Data startu"])
-        df2["Data końca"] = pd.to_datetime(df2["Data końca"])
+        df2["Data startu"] = pd.to_datetime(df2["Data startu"], errors='coerce')
+        df2["Data końca"] = pd.to_datetime(df2["Data końca"], errors='coerce')
         next_year = datetime.now().year + 1
         limit_date = pd.Timestamp(year=next_year, month=12, day=31)
         
