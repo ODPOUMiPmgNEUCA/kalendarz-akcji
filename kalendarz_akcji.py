@@ -19,6 +19,7 @@ import json
 import io
 import datetime
 from streamlit_calendar import calendar
+from datetime import datetime
 
 st.set_page_config(page_title='Kalendarz akcji', layout='wide')
 st.title("📆 Kalendarz akcji")
@@ -96,8 +97,14 @@ with tab2:
         df2 = pd.read_csv(uploaded_file_tab2, sep=";")
         df2 = df2.iloc[:, [0, 22, 23, 32, 7]]
         df2.columns = ["Nazwa akcji", "Data startu", "Data końca", "Zlecenie", "Producent"]
+        df2 = df2.drop_duplicates()
         df2["Data startu"] = pd.to_datetime(df2["Data startu"])
         df2["Data końca"] = pd.to_datetime(df2["Data końca"])
+        next_year = datetime.now().year + 1
+        limit_date = pd.Timestamp(year=next_year, month=12, day=31)
+        
+        # Zamieniamy daty większe niż limit_date na limit_date
+        df2.loc[df2["Data końca"] > limit_date, "Data końca"] = limit_date
         
         # Zakładam, że w pliku jest kolumna "Producent"
         producenci = df2["Producent"].unique()
