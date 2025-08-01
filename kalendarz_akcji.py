@@ -103,22 +103,51 @@ with tab2:
         next_year = datetime.now().year + 1
         limit_date = pd.Timestamp(year=next_year, month=12, day=31)
         
+        # 1. Podstawowy podział rodzajów promocji
+        df2["Rodzaj promocji"] = ""
+        df2.loc[df2["Nazwa akcji"] == 61114, "Rodzaj promocji"] = "ŚZ/P"
+        df2.loc[df2["Zlecenie"].astype(str).str.contains("ZGZ", na=False), "Rodzaj promocji"] = "ZGZ"
+        df2.loc[df2["Nazwa akcji"] == 27001, "Rodzaj promocji"] = "centralne"
+        df2.loc[df2["Zlecenie"].astype(str).str.contains("BKS", na=False), "Rodzaj promocji"] = "sieci"
+        df2.loc[df2["Rodzaj promocji"] == "", "Rodzaj promocji"] = "regionalne"
+
         # Zamieniamy daty większe niż limit_date na limit_date
         df2.loc[df2["Data końca"] > limit_date, "Data końca"] = limit_date
         
-        # Zakładam, że w pliku jest kolumna "Producent"
+        # Wybór producenta
         producenci = df2["Producent"].unique()
         wybrany_producent = st.selectbox("Wybierz producenta do wyświetlenia", options=producenci, key="select_producent")
 
-        # Filtrujemy df2 wg wybranego producenta
-        df2_filtered = df2[df2["Producent"] == wybrany_producent]
+        # Wybór rodzaju promocji (dla danego producenta)
+        rodzaje_dostepne = df2[df2["Producent"] == wybrany_producent]["Rodzaj promocji"].unique()
+        wybrany_rodzaj = st.selectbox("Wybierz rodzaj promocji", options=rodzaje_dostepne, key="select_rodzaj_promocji")
 
+        # Filtrujemy wg producenta i początkowo wg rodzaju promocji
+        df2_filtered = df2[(df2["Producent"] == wybrany_producent)]
+
+        if wybrany_rodzaj == "regionalne":
+            # Podział regionalnych na RPM, IPRA i regionalne pozostałe
+            df2_regional = df2_filtered[df2_filtered["Rodzaj promocji"] == "regionalne"].copy()
+            df2_regional.loc[df2_regional["Zlecenie"].astype(str).str.contains("RPM", na=False), "Rodzaj promocji"] = "RPM"
+            df2_regional.loc[df2_regional["Zlecenie"].astype(str).str.contains("IPRA", na=False), "Rodzaj promocji"] = "IPRA"
+            df2_regional.loc[~df2_regional["Rodzaj promocji"].isin(["RPM", "IPRA"]), "Rodzaj promocji"] = "regionalne pozostałe"
+
+            # Drugi wybór podrodzaju w regionalnych
+            podrodzaje = df2_regional["Rodzaj promocji"].unique()
+            wybrany_podrodzaj = st.selectbox("Wybierz podrodzaj regionalny", options=podrodzaje, key="select_podrodzaj_regionalny")
+
+            df2_final = df2_regional[df2_regional["Rodzaj promocji"] == wybrany_podrodzaj]
+        else:
+            # Inne rodzaje promocji bez dalszego podziału
+            df2_final = df2_filtered[df2_filtered["Rodzaj promocji"] == wybrany_rodzaj]
+
+        # Budowa kolorów i wydarzeń do kalendarza
         palette2 = palettes[selected_palette_tab2]
-        unique_names2 = df2_filtered["Nazwa akcji"].unique()
+        unique_names2 = df2_final["Nazwa akcji"].unique()
         color_map2 = {name: palette2[i % len(palette2)] for i, name in enumerate(unique_names2)}
 
         events2 = []
-        for _, row in df2_filtered.iterrows():
+        for _, row in df2_final.iterrows():
             events2.append({
                 "start": row["Data startu"].strftime("%Y-%m-%d"),
                 "end": row["Data końca"].strftime("%Y-%m-%d"),
@@ -147,4 +176,3 @@ with tab2:
 
     else:
         st.info("📥 Najpierw wczytaj plik Excel, aby zobaczyć kalendarz szczegółowy.")
-
