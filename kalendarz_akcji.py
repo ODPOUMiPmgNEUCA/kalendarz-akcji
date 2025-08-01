@@ -41,39 +41,43 @@ st.title("📆 Kalendarz akcji")
 # 🎨 PALETY
 palettes = {
     "Żywa": [
-        "#FF6B6B", "#FF922B", "#FFD93D", "#6BCB77",
-        "#4D96FF", "#845EC2", "#FF5E78", "#00C9A7"
+        "#FF6B6B", "#FF922B", "#FFD93D", "#6BCB77", "#4D96FF", "#845EC2",
+        "#FF5E78", "#00C9A7", "#FF4C4C", "#FF7F3F", "#FFCD38", "#28C76F",
+        "#2E86DE", "#9D4EDD"
     ],
     "Pastelowa": [
-        "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9",
-        "#BAE1FF", "#E0BBE4", "#FFCCE5", "#C2F0FC"
+        "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF", "#E0BBE4",
+        "#FFCCE5", "#C2F0FC", "#FFE5E5", "#FFF1BA", "#E6FFBA", "#BAFFE1",
+        "#D4E7FF", "#F3D1FF"
     ],
     "Odcienie niebieskiego": [
-        "#001F3F", "#003566", "#00509E", "#0074D9",
-        "#419DFF", "#7ABFFF", "#A8D8FF", "#D6ECFF"
+        "#001F3F", "#003566", "#00509E", "#0074D9", "#419DFF", "#7ABFFF",
+        "#A8D8FF", "#D6ECFF", "#002855", "#004E92", "#1A73E8", "#5DA9FF",
+        "#96C7FF", "#CBE2FF"
     ]
 }
-
 # 🔽 WYBÓR PALETY
 selected_palette = st.selectbox("🎨 Wybierz paletę kolorów", list(palettes.keys()))
 
 # 📂 UPLOAD PLIKU
 uploaded_file = st.file_uploader("📄 Wczytaj plik Excel z akcjami", type=["xlsx"])
 
+# 📑 ZAKŁADKI ZAWSZE WIDOCZNE
+tab1, tab2 = st.tabs(["📆 Kalendarz", "📊 Statystyki"])
+
 if uploaded_file:
     df = pd.read_excel(uploaded_file)
     df["Data startu"] = pd.to_datetime(df["Data startu"])
     df["Data końca"] = pd.to_datetime(df["Data końca"])
 
-    # Tworzymy zakładki
-    tab1, tab2 = st.tabs(["📆 Kalendarz", "📊 Statystyki"])
+    # 🎨 Kolory dla akcji
+    palette = palettes[selected_palette]
+    unique_names = df["Nazwa akcji"].unique()
+    color_map = {name: palette[i % len(palette)] for i, name in enumerate(unique_names)}
 
+    # 🔹 Zakładka 1 – kalendarz
     with tab1:
         st.subheader("📅 Widok kalendarza")
-
-        palette = palettes[selected_palette]
-        unique_names = df["Nazwa akcji"].unique()
-        color_map = {name: palette[i % len(palette)] for i, name in enumerate(unique_names)}
 
         events = []
         for _, row in df.iterrows():
@@ -103,10 +107,11 @@ if uploaded_file:
 
         calendar(events=events, options=calendar_options)
 
+    # 🔹 Zakładka 2 – statystyki
     with tab2:
         st.subheader("📊 Statystyki akcji")
 
-        # 📝 Podstawowe statystyki
+        # 📝 Podstawowe dane
         total_events = len(df)
         unique_events = df["Nazwa akcji"].nunique()
         longest = (df["Data końca"] - df["Data startu"]).max().days + 1
@@ -128,4 +133,8 @@ if uploaded_file:
         st.plotly_chart(fig, use_container_width=True)
 
 else:
-    st.info("📥 Proszę wczytać plik Excel z kolumnami: Nazwa akcji, Data startu, Data końca.")
+    with tab1:
+        st.info("📥 Najpierw wczytaj plik Excel, aby zobaczyć kalendarz.")
+
+    with tab2:
+        st.info("📥 Najpierw wczytaj plik Excel, aby zobaczyć statystyki.")
