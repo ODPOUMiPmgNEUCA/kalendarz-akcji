@@ -16,7 +16,6 @@ Original file is located at
     https://colab.research.google.com/drive/1bfU5lwdNa2GOPWmQ9-URaf30VnlBzQC0
 """
 
-#importowanie potrzebnych bibliotek
 import os
 import openpyxl
 import streamlit as st
@@ -34,81 +33,69 @@ import random
 
 st.set_page_config(page_title='Kalendarz akcji', layout='wide')
 
-tabs_font_css = """
-<style>
-div[class*="stTextInput"] label {
-  font-size: 26px;
-  color: black;
-}
-div[class*="stSelectbox"] label {
-  font-size: 26px;
-  color: black;
-}
-</style>
-"""
-st.title("Kalendarz akcji")
+st.title("📅 Kalendarz akcji")
 
-# Upload pliku Excel z akcjami
-uploaded_file = st.file_uploader("Wczytaj plik Excel z akcjami", type=["xlsx"])
+# --- 🔵 TWORZYMY ZAKŁADKI ---
+tab1, tab2 = st.tabs(["📆 Kalendarz", "📊 Statystyki"])
 
-if uploaded_file:
-    # Wczytanie Excela do DataFrame
-    df = pd.read_excel(uploaded_file)
+with tab1:
+    # Upload pliku Excel z akcjami
+    uploaded_file = st.file_uploader("Wczytaj plik Excel z akcjami", type=["xlsx"])
 
-    # Wyświetlamy dane żeby zobaczyć co w pliku
-    st.write("Podgląd danych:")
-    st.dataframe(df.head())
+    if uploaded_file:
+        # Wczytanie Excela do DataFrame
+        df = pd.read_excel(uploaded_file)
 
-    # Zakładam, że masz kolumny: "Nazwa akcji", "Data startu", "Data końca"
-    # Konwersja kolumn na datetime
-    df["Data startu"] = pd.to_datetime(df["Data startu"])
-    df["Data końca"] = pd.to_datetime(df["Data końca"])
+        st.write("Podgląd danych:")
+        st.dataframe(df.head())
 
-    # Użyjmy stałego mapowania kolorów, żeby kolory się nie zmieniały przy odświeżeniu
-    # Jeśli chcesz, możesz podać własne kolory na stałe tutaj:
-    predefined_colors = [
-        "#e6194b", "#3cb44b", "#ffe119", "#4363d8", "#f58231",
-        "#911eb4", "#46f0f0", "#f032e6", "#bcf60c", "#fabebe",
-        "#008080", "#e6beff", "#9a6324", "#fffac8", "#800000",
-        "#aaffc3", "#808000", "#ffd8b1", "#000075", "#808080"
-    ]
+        df["Data startu"] = pd.to_datetime(df["Data startu"])
+        df["Data końca"] = pd.to_datetime(df["Data końca"])
 
-    unique_names = df["Nazwa akcji"].unique()
-    color_map = {}
-    for i, name in enumerate(unique_names):
-        color_map[name] = predefined_colors[i % len(predefined_colors)]
+        # 🎨 Paleta kolorów (odcienie niebieskiego)
+        blue_palette = [
+            "#c6dbef", "#9ecae1", "#6baed6",
+            "#4292c6", "#2171b5", "#08519c",
+            "#08306b", "#041f4a"
+        ]
 
-    # Przygotowanie listy eventów do streamlit-calendar
-    events = []
-    for _, row in df.iterrows():
-        event = {
-            "start": row["Data startu"].strftime("%Y-%m-%d"),
-            "end": row["Data końca"].strftime("%Y-%m-%d"),
-            "title": row["Nazwa akcji"],
-            "color": color_map[row["Nazwa akcji"]],
+        unique_names = df["Nazwa akcji"].unique()
+        color_map = {name: blue_palette[i % len(blue_palette)] for i, name in enumerate(unique_names)}
+
+        # Przygotowanie eventów
+        events = []
+        for _, row in df.iterrows():
+            event = {
+                "start": row["Data startu"].strftime("%Y-%m-%d"),
+                "end": row["Data końca"].strftime("%Y-%m-%d"),
+                "title": row["Nazwa akcji"],
+                "color": color_map[row["Nazwa akcji"]],
+            }
+            events.append(event)
+
+        # Ustawienia kalendarza
+        calendar_options = {
+            "initialView": "dayGridMonth",
+            "headerToolbar": {
+                "left": "prev,next today",
+                "center": "title",
+                "right": "dayGridMonth,dayGridWeek,dayGridDay"
+            },
+            "height": 750,
+            "contentHeight": "auto",
+            "aspectRatio": 1.5,
+            "navLinks": True,
+            "editable": False,
+            "dayMaxEventRows": True,
+            "locale": "pl",
+            "firstDay": 1
         }
-        events.append(event)
 
-    # Ustawienia kalendarza
-    calendar_options = {
-        "initialView": "dayGridMonth",
-        "headerToolbar": {
-            "left": "prev,next today",
-            "center": "title",
-            "right": "dayGridMonth,dayGridWeek,dayGridDay"
-        },
-        "height": 750,
-        "contentHeight": "auto",
-        "aspectRatio": 1.5,
-        "navLinks": True,
-        "editable": False,
-        "dayMaxEventRows": True,
-        "locale": "pl",
-        "firstDay": 1
-    }
+        calendar(events=events, options=calendar_options)
 
+    else:
+        st.info("Proszę wczytać plik Excel z kolumnami: Nazwa akcji, Data startu, Data końca.")
 
-    calendar(events=events, options=calendar_options)
-
-else:
-    st.info("Proszę wczytać plik Excel z kolumnami: Nazwa akcji, Data startu, Data końca.")
+with tab2:
+    st.subheader("📊 Statystyki akcji")
+    st.write("Tutaj można dodać wykresy, analizy, podsumowania – np. ile akcji jest w danym miesiącu.")
