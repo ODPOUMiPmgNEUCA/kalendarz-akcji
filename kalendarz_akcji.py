@@ -160,6 +160,10 @@ with tab2:
         else:
             df_final = df_rodzaj_filtered[df_rodzaj_filtered["Producent"] == wybrany_producent]
 
+        # 🔥 Usuwanie duplikatów NAZW PROMOCJI (ważne: jeśli promocja ma wielu producentów, pokaże się raz)
+        df_final = df_final.sort_values("Data startu")
+        df_final = df_final.drop_duplicates(subset=["Nazwa akcji"], keep="first")
+
         # Przygotowanie kolorów i eventów do kalendarza
         palette2 = palettes[selected_palette_tab2]
         unique_names2 = df_final["Nazwa akcji"].unique()
@@ -195,4 +199,5 @@ with tab2:
 
     else:
         st.info("📥 Najpierw wczytaj plik Excel, aby zobaczyć kalendarz szczegółowy.")
+
 
