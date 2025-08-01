@@ -56,11 +56,11 @@ palettes = {
 # 📑 ZAKŁADKI NA POCZĄTKU
 tab1, tab2 = st.tabs(["📆 Kalendarz główny", "📆 Kalendarz szczegółowy"])
 
-# 🔽 WYBÓR PALETY (przed uploadem, widoczny od razu)
-selected_palette = st.selectbox("🎨 Wybierz paletę kolorów", list(palettes.keys()))
-
 # 📂 UPLOAD PLIKU
 uploaded_file = st.file_uploader("📄 Wczytaj plik Excel z akcjami", type=["xlsx"])
+
+# 🔽 WYBÓR PALETY (przed uploadem, widoczny od razu)
+selected_palette = st.selectbox("🎨 Wybierz paletę kolorów", list(palettes.keys()))
 
 if uploaded_file:
     df = pd.read_excel(uploaded_file)
