@@ -56,26 +56,22 @@ palettes = {
 # 📑 ZAKŁADKI NA POCZĄTKU
 tab1, tab2 = st.tabs(["📆 Kalendarz główny", "📆 Kalendarz szczegółowy"])
 
-
-# 🔽 WYBÓR PALETY (przed uploadem, widoczny od razu)
 selected_palette = st.selectbox("🎨 Wybierz paletę kolorów", list(palettes.keys()))
 
+with tab1:
+    st.subheader("📅 Widok kalendarza")
+    uploaded_file = st.file_uploader("📄 Wczytaj plik Excel z akcjami", type=["xlsx"])
+    st.subheader("🎨 Wybierz paletę kolorów dla kalendarza")
+    selected_palette_tab1 = st.selectbox("Paleta dla kalendarza", list(palettes.keys()), key="palette_tab1")
 
-    # 🔹 Zakładka 1 – kalendarz
-    with tab1:
-        st.subheader("📅 Widok kalendarza")
-        # 📂 UPLOAD PLIKU
-        uploaded_file = st.file_uploader("📄 Wczytaj plik Excel z akcjami", type=["xlsx"])
-        
-        if uploaded_file:
-            df = pd.read_excel(uploaded_file)
-            df["Data startu"] = pd.to_datetime(df["Data startu"])
-            df["Data końca"] = pd.to_datetime(df["Data końca"])
+    if uploaded_file:
+        df = pd.read_excel(uploaded_file)
+        df["Data startu"] = pd.to_datetime(df["Data startu"])
+        df["Data końca"] = pd.to_datetime(df["Data końca"])
 
-            # 🎨 Kolory dla akcji
-            palette = palettes[selected_palette]
-            unique_names = df["Nazwa akcji"].unique()
-            color_map = {name: palette[i % len(palette)] for i, name in enumerate(unique_names)}
+        palette = palettes[selected_palette_tab1]
+        unique_names = df["Nazwa akcji"].unique()
+        color_map = {name: palette[i % len(palette)] for i, name in enumerate(unique_names)}
 
         events = []
         for _, row in df.iterrows():
@@ -88,11 +84,7 @@ selected_palette = st.selectbox("🎨 Wybierz paletę kolorów", list(palettes.k
 
         calendar_options = {
             "initialView": "dayGridMonth",
-            "headerToolbar": {
-                "left": "prev,next today",
-                "center": "title",
-                "right": "dayGridMonth,dayGridWeek,dayGridDay"
-            },
+            "headerToolbar": {"left": "prev,next today", "center": "title", "right": "dayGridMonth,dayGridWeek,dayGridDay"},
             "height": 750,
             "contentHeight": "auto",
             "aspectRatio": 1.5,
@@ -104,11 +96,12 @@ selected_palette = st.selectbox("🎨 Wybierz paletę kolorów", list(palettes.k
         }
 
         calendar(events=events, options=calendar_options)
+    else:
+        st.info("📥 Najpierw wczytaj plik Excel, aby zobaczyć kalendarz.")
 
-    # 🔹 Zakładka 2 – statystyki
-    with tab2:
-        st.subheader("📊 Statystyki akcji")
-
+with tab2:
+    st.subheader("📊 Statystyki akcji")
+    if uploaded_file:
         total_events = len(df)
         unique_events = df["Nazwa akcji"].nunique()
         longest = (df["Data końca"] - df["Data startu"]).max().days + 1
@@ -119,7 +112,6 @@ selected_palette = st.selectbox("🎨 Wybierz paletę kolorów", list(palettes.k
         ✅ **Najdłuższa akcja trwała:** {longest} dni
         """)
 
-        # 📈 Wykres liczby akcji w poszczególnych miesiącach
         df["Miesiąc"] = df["Data startu"].dt.to_period("M").astype(str)
         month_counts = df.groupby("Miesiąc").size().reset_index(name="Liczba akcji")
 
@@ -128,11 +120,5 @@ selected_palette = st.selectbox("🎨 Wybierz paletę kolorów", list(palettes.k
                      color="Liczba akcji", color_continuous_scale="Blues")
 
         st.plotly_chart(fig, use_container_width=True)
-
-# 🔻 Jeśli plik nie został jeszcze wgrany
-else:
-    with tab1:
-        st.info("📥 Najpierw wczytaj plik Excel, aby zobaczyć kalendarz.")
-
-    with tab2:
+    else:
         st.info("📥 Najpierw wczytaj plik Excel, aby zobaczyć statystyki.")
