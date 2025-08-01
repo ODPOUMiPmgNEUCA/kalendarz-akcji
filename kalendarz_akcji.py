@@ -169,6 +169,11 @@ with tab2:
         unique_names2 = df_final["Nazwa akcji"].unique()
         color_map2 = {name: palette2[i % len(palette2)] for i, name in enumerate(unique_names2)}
 
+
+        st.write("Sprawdzenie, czy są NaT w Data końca:", df_final["Data końca"].isna().sum())
+        st.write("Wiersze z NaT w 'Data końca':")
+        st.write(df_final[df_final["Data końca"].isna()])
+
         events2 = []
         for _, row in df_final.iterrows():
             events2.append({
