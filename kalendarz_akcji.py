@@ -95,7 +95,7 @@ with tab2:
     selected_palette_tab2 = st.selectbox("Paleta dla kalendarza szczegółowego", list(palettes.keys()), key="palette_tab2")
 
     if uploaded_file_tab2:
-        df2 = pd.read_excel(uploaded_file_tab2)
+        df2 = pd.read_csv(uploaded_file_tab2)
         df2["Data startu"] = pd.to_datetime(df2["Data startu"])
         df2["Data końca"] = pd.to_datetime(df2["Data końca"])
         
