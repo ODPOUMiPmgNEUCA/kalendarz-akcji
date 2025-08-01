@@ -7,9 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1bfU5lwdNa2GOPWmQ9-URaf30VnlBzQC0
 """
 
-# -*- coding: utf-8 -*-
-"""Kalendarz_akcji.ipynb"""
-
 import openpyxl
 import streamlit as st
 import pandas as pd
