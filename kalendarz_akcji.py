@@ -166,8 +166,9 @@ with tab2:
         # Lista producentów z już przefiltrowanego zbioru, z opcją "Wszystkie"
         producenci = list(df_rodzaj_filtered["Producent"].unique())
         producenci.sort()
-        producenci = ["Wszystkie"] + producenci
-        wybrany_producent = st.selectbox("Wybierz producenta do wyświetlenia", options=producenci, key="select_producent")
+        #producenci = ["Wszystkie"] + producenci
+        wybrany_producent = st.selectbox("Wybierz producenta do wyświetlenia", options=producenci, key="select_producent",
+            index=0) # <- to oznacza, że domyślnie zostanie wybrana pierwsza pozycja listy)
 
         # Ostateczne filtrowanie po producencie
         if wybrany_producent == "Wszystkie":
