@@ -113,7 +113,10 @@ with tab2:
         df2.loc[df2["Nazwa akcji"].astype(str).str.contains("ZGZ", na=False), "Rodzaj promocji"] = "ZGZ"
         df2.loc[df2["Zlecenie"] == 27001, "Rodzaj promocji"] = "centralne"
         df2.loc[df2["Nazwa akcji"].astype(str).str.contains("BKS", na=False), "Rodzaj promocji"] = "sieci"
-        df2.loc[df2["Rodzaj promocji"] == "", "Rodzaj promocji"] = "regionalne"
+        #df2.loc[df2["Rodzaj promocji"] == "", "Rodzaj promocji"] = "regionalne"
+        df2.loc[df2["Nazwa akcji"].astype(str).str.contains("RPM", na=False), "Rodzaj promocji"] = "RPM"
+        df2.loc[df2["Nazwa akcji"].astype(str).str.contains("IPRA", na=False), "Rodzaj promocji"] = "IPRA"
+        df2.loc[~df2["Rodzaj promocji"].isin(["RPM", "IPRA"]), "Rodzaj promocji"] = "regionalne pozostałe"
 
         # Zamieniamy daty większe niż limit_date na limit_date
         df2.loc[df2["Data końca"] > limit_date, "Data końca"] = limit_date
@@ -144,21 +147,21 @@ with tab2:
             df_regional.loc[~df_regional["Rodzaj promocji"].isin(["RPM", "IPRA"]), "Rodzaj promocji"] = "regionalne pozostałe"
 
             # Wybór podrodzaju regionalnego
-            podrodzaje = df_regional["Rodzaj promocji"].unique()
-            podrodzaje = sorted(podrodzaje)
-            podrodzaje = ["Wszystkie"] + list(podrodzaje)
+            #podrodzaje = df_regional["Rodzaj promocji"].unique()
+            #podrodzaje = sorted(podrodzaje)
+            #podrodzaje = ["Wszystkie"] + list(podrodzaje)
 
-            wybrany_podrodzaj = st.selectbox("Wybierz podrodzaj regionalny", options=podrodzaje, key="select_podrodzaj_regionalny")
+            #wybrany_podrodzaj = st.selectbox("Wybierz podrodzaj regionalny", options=podrodzaje, key="select_podrodzaj_regionalny")
 
-            if wybrany_podrodzaj == "Wszystkie":
-                df_rodzaj_filtered = pd.concat([df2[df2["Rodzaj promocji"] != "regionalne"], df_regional])
-            else:
-                df_rodzaj_filtered = pd.concat([
-                    df2[df2["Rodzaj promocji"] != "regionalne"],
-                    df_regional[df_regional["Rodzaj promocji"] == wybrany_podrodzaj]
-                ])
-        else:
-            df_rodzaj_filtered = df2[df2["Rodzaj promocji"] == wybrany_rodzaj]
+            #if wybrany_podrodzaj == "Wszystkie":
+                #df_rodzaj_filtered = pd.concat([df2[df2["Rodzaj promocji"] != "regionalne"], df_regional])
+            #else:
+                #df_rodzaj_filtered = pd.concat([
+                    #df2[df2["Rodzaj promocji"] != "regionalne"],
+                    #df_regional[df_regional["Rodzaj promocji"] == wybrany_podrodzaj]
+                #])
+        #else:
+            #df_rodzaj_filtered = df2[df2["Rodzaj promocji"] == wybrany_rodzaj]
 
         # Lista producentów z już przefiltrowanego zbioru, z opcją "Wszystkie"
         producenci = list(df_rodzaj_filtered["Producent"].unique())
