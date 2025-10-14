@@ -20,6 +20,7 @@ import io
 import datetime
 from streamlit_calendar import calendar
 from datetime import datetime
+import os
 
 st.set_page_config(page_title='Kalendarz akcji', layout='wide')
 st.title("📆 Kalendarz akcji")
