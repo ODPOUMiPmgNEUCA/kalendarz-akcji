@@ -138,13 +138,13 @@ with tab2:
 
         # Filtrowanie po rodzaju promocji lub pozostawienie wszystkiego
         #if wybrany_rodzaj == "Wszystkie":
-            #df_rodzaj_filtered = df2.copy()
-        if wybrany_rodzaj == "regionalne":
+        df_rodzaj_filtered = df2.copy()
+        #if wybrany_rodzaj == "regionalne":
             # Dodatkowy podział dla regionalnych
-            df_regional = df2[df2["Rodzaj promocji"] == "regionalne"].copy()
-            df_regional.loc[df_regional["Nazwa akcji"].astype(str).str.contains("RPM", na=False), "Rodzaj promocji"] = "RPM"
-            df_regional.loc[df_regional["Nazwa akcji"].astype(str).str.contains("IPRA", na=False), "Rodzaj promocji"] = "IPRA"
-            df_regional.loc[~df_regional["Rodzaj promocji"].isin(["RPM", "IPRA"]), "Rodzaj promocji"] = "regionalne pozostałe"
+            #df_regional = df2[df2["Rodzaj promocji"] == "regionalne"].copy()
+            #df_regional.loc[df_regional["Nazwa akcji"].astype(str).str.contains("RPM", na=False), "Rodzaj promocji"] = "RPM"
+            #df_regional.loc[df_regional["Nazwa akcji"].astype(str).str.contains("IPRA", na=False), "Rodzaj promocji"] = "IPRA"
+            #df_regional.loc[~df_regional["Rodzaj promocji"].isin(["RPM", "IPRA"]), "Rodzaj promocji"] = "regionalne pozostałe"
 
             # Wybór podrodzaju regionalnego
             #podrodzaje = df_regional["Rodzaj promocji"].unique()
