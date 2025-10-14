@@ -139,7 +139,7 @@ with tab2:
 
         # Filtrowanie po rodzaju promocji lub pozostawienie wszystkiego
         #if wybrany_rodzaj == "Wszystkie":
-        df_rodzaj_filtered = df2.copy()
+        df_rodzaj_filtered = df2[df2["Rodzaj promocji"] == wybrany_rodzaj].copy()
         #if wybrany_rodzaj == "regionalne":
             # Dodatkowy podział dla regionalnych
             #df_regional = df2[df2["Rodzaj promocji"] == "regionalne"].copy()
