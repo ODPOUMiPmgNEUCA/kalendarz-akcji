@@ -136,7 +136,7 @@ with tab2:
         # Filtrowanie po rodzaju promocji lub pozostawienie wszystkiego
         #if wybrany_rodzaj == "Wszystkie":
             #df_rodzaj_filtered = df2.copy()
-        elif wybrany_rodzaj == "regionalne":
+        if wybrany_rodzaj == "regionalne":
             # Dodatkowy podział dla regionalnych
             df_regional = df2[df2["Rodzaj promocji"] == "regionalne"].copy()
             df_regional.loc[df_regional["Nazwa akcji"].astype(str).str.contains("RPM", na=False), "Rodzaj promocji"] = "RPM"
