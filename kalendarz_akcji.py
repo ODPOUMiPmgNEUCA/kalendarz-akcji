@@ -122,7 +122,8 @@ with tab2:
         # Dodanie opcji "Wszystkie" do listy rodzajów promocji
         rodzaje_dostepne = list(df2["Rodzaj promocji"].unique())
         rodzaje_dostepne.sort()
-        rodzaje_dostepne = ["Wszystkie"] + rodzaje_dostepne
+        #rodzaje_dostepne = ["Wszystkie"] + rodzaje_dostepne
+        #rodzaje_dostepne = ["ŚZ/P", "ZGZ", "centralne", "sieci", "regionalne"]
 
         #wybrany_rodzaj = st.selectbox("Wybierz rodzaj promocji", options=rodzaje_dostepne, key="select_rodzaj_promocji")
         # Domyślnie wybieramy np. "Wszystkie"
