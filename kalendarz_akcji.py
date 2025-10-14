@@ -116,7 +116,8 @@ with tab2:
         #df2.loc[df2["Rodzaj promocji"] == "", "Rodzaj promocji"] = "regionalne"
         df2.loc[df2["Nazwa akcji"].astype(str).str.contains("RPM", na=False), "Rodzaj promocji"] = "RPM"
         df2.loc[df2["Nazwa akcji"].astype(str).str.contains("IPRA", na=False), "Rodzaj promocji"] = "IPRA"
-        df2.loc[~df2["Rodzaj promocji"].isin(["RPM", "IPRA"]), "Rodzaj promocji"] = "regionalne pozostałe"
+        # Wszystko, co nadal puste, staje się "regionalne pozostałe"
+        df2.loc[df2["Rodzaj promocji"] == "", "Rodzaj promocji"] = "regionalne pozostałe"
 
         # Zamieniamy daty większe niż limit_date na limit_date
         df2.loc[df2["Data końca"] > limit_date, "Data końca"] = limit_date
