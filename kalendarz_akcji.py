@@ -130,12 +130,12 @@ with tab2:
         wybrany_rodzaj = st.selectbox(
             "Wybierz rodzaj promocji",
             options=rodzaje_dostepne,
-            index=1 # <- to oznacza, że domyślnie zostanie wybrana pierwsza pozycja listy
+            index=0 # <- to oznacza, że domyślnie zostanie wybrana pierwsza pozycja listy
         )
 
         # Filtrowanie po rodzaju promocji lub pozostawienie wszystkiego
-        if wybrany_rodzaj == "Wszystkie":
-            df_rodzaj_filtered = df2.copy()
+        #if wybrany_rodzaj == "Wszystkie":
+            #df_rodzaj_filtered = df2.copy()
         elif wybrany_rodzaj == "regionalne":
             # Dodatkowy podział dla regionalnych
             df_regional = df2[df2["Rodzaj promocji"] == "regionalne"].copy()
