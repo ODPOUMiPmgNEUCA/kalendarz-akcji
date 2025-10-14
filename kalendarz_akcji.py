@@ -124,7 +124,13 @@ with tab2:
         rodzaje_dostepne.sort()
         rodzaje_dostepne = ["Wszystkie"] + rodzaje_dostepne
 
-        wybrany_rodzaj = st.selectbox("Wybierz rodzaj promocji", options=rodzaje_dostepne, key="select_rodzaj_promocji")
+        #wybrany_rodzaj = st.selectbox("Wybierz rodzaj promocji", options=rodzaje_dostepne, key="select_rodzaj_promocji")
+        # Domyślnie wybieramy np. "Wszystkie"
+        wybrany_rodzaj = st.selectbox(
+            "Wybierz rodzaj promocji",
+            options=rodzaje_dostepne,
+            index=1 # <- to oznacza, że domyślnie zostanie wybrana pierwsza pozycja listy
+        )
 
         # Filtrowanie po rodzaju promocji lub pozostawienie wszystkiego
         if wybrany_rodzaj == "Wszystkie":
