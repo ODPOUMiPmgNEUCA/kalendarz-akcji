@@ -88,13 +88,16 @@ with tab1:
 
 with tab2:
     st.subheader("📅 Widok kalendarza szczegółowego")
-    uploaded_file_tab2 = st.file_uploader("📄 Wczytaj plik csv (raport wolnego)", type=["xlsx"], key="uploader_tab2") # tu zmienilam z csv
+    #uploaded_file_tab2 = st.file_uploader("📄 Wczytaj plik csv (raport wolnego)", type=["xlsx"], key="uploader_tab2") # tu zmienilam z csv
+    file_path = os.path.join("szczegolowe.xlsx")
     
     st.subheader("🎨 Wybierz paletę kolorów dla kalendarza szczegółowego")
     selected_palette_tab2 = st.selectbox("Paleta dla kalendarza szczegółowego", list(palettes.keys()), key="palette_tab2")
 
-    if uploaded_file_tab2:
-        df2 = pd.read_excel(uploaded_file_tab2) #csv na excel i usunelam sep=;
+    #if uploaded_file_tab2:
+    if os.path.exists(file_path):
+        #df2 = pd.read_excel(uploaded_file_tab2) #csv na excel i usunelam sep=;
+        df2 = pd.read_excel(file_path)
         #df2 = df2.iloc[:, [0, 22, 23, 32, 7]]
         df2.columns = ["Nazwa akcji", "Data startu", "Data końca", "Zlecenie", "Producent"]
         df2 = df2.drop_duplicates()
